@@ -6,14 +6,14 @@
 // Configuration - 需要根据你的Google账户进行调整
 const CONFIG = {
   // Google Sheets ID - 请替换为你的实际Google Sheets ID
-  SHEET_ID: "YOUR_GOOGLE_SHEETS_ID_HERE",
+  SHEET_ID: "1h0xAVd2tABmBV64tZl62i2Vs2wHm7CEDGOYxDeJea9k",
 
   // 管理员密码
   ADMIN_PASSWORD: "usydtexasholdem3709@",
 
   // 授权的Google账户邮箱列表
   AUTHORIZED_EMAILS: [
-    "your-email@gmail.com", // 请替换为你的实际邮箱
+    "ricardo370902@gmail.com", // 请替换为你的实际邮箱
     // 'another-admin@gmail.com',  // 可以添加更多管理员
   ],
 
