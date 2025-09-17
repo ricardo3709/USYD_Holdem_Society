@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – Texas Hold'em Results</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="admin.js" type="module"></script>
+</head>
+<body class="admin-body">
+  <div class="page page--narrow">
+    <header class="hero hero--compact">
+      <div class="hero__copy">
+        <h1>Game Results Entry</h1>
+        <p class="hero__tagline">Submit final table standings to update the leaderboard.</p>
+      </div>
+      <div class="hero__actions hero__actions--admin">
+        <a href="/" class="button">View Leaderboard</a>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <form id="result-form" class="admin-card" autocomplete="off">
+        <fieldset class="admin-fieldset">
+          <label class="admin-label" for="label">Game label</label>
+          <input id="label" name="label" type="text" class="admin-input" placeholder="e.g. March 12 Weekly Final Table" required />
+        </fieldset>
+
+        <section class="admin-table-wrapper">
+          <table class="table admin-table" role="grid">
+            <thead>
+              <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Nickname</th>
+                <th scope="col">Points Awarded</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-rank-row="1">
+                <td>1</td>
+                <td>
+                  <input type="text" name="rank-1" class="admin-input" placeholder="Champion nickname" />
+                </td>
+                <td class="admin-points" data-rank="1">200</td>
+              </tr>
+              <tr data-rank-row="2">
+                <td>2</td>
+                <td>
+                  <input type="text" name="rank-2" class="admin-input" placeholder="2nd place" />
+                </td>
+                <td class="admin-points" data-rank="2">150</td>
+              </tr>
+              <tr data-rank-row="3">
+                <td>3</td>
+                <td>
+                  <input type="text" name="rank-3" class="admin-input" placeholder="3rd place" />
+                </td>
+                <td class="admin-points" data-rank="3">120</td>
+              </tr>
+              <tr data-rank-row="4">
+                <td>4</td>
+                <td>
+                  <input type="text" name="rank-4" class="admin-input" placeholder="4th place" />
+                </td>
+                <td class="admin-points" data-rank="4">100</td>
+              </tr>
+              <tr data-rank-row="5">
+                <td>5</td>
+                <td>
+                  <input type="text" name="rank-5" class="admin-input" placeholder="5th place" />
+                </td>
+                <td class="admin-points" data-rank="5">80</td>
+              </tr>
+              <tr data-rank-row="6">
+                <td>6</td>
+                <td>
+                  <input type="text" name="rank-6" class="admin-input" placeholder="6th place" />
+                </td>
+                <td class="admin-points" data-rank="6">60</td>
+              </tr>
+              <tr data-rank-row="7">
+                <td>7</td>
+                <td>
+                  <input type="text" name="rank-7" class="admin-input" placeholder="7th place" />
+                </td>
+                <td class="admin-points" data-rank="7">50</td>
+              </tr>
+              <tr data-rank-row="8">
+                <td>8</td>
+                <td>
+                  <input type="text" name="rank-8" class="admin-input" placeholder="8th place" />
+                </td>
+                <td class="admin-points" data-rank="8">40</td>
+              </tr>
+              <tr data-rank-row="9">
+                <td>9</td>
+                <td>
+                  <input type="text" name="rank-9" class="admin-input" placeholder="9th place" />
+                </td>
+                <td class="admin-points" data-rank="9">30</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <div class="admin-actions">
+          <button class="button" type="submit">Submit Results</button>
+        </div>
+      </form>
+
+      <section id="status" class="admin-status" aria-live="polite" hidden></section>
+    </main>
+
+    <footer class="footer">
+      <small>Authorized users only. Entries instantly affect the local leaderboard.</small>
+    </footer>
+  </div>
+</body>
+</html>
