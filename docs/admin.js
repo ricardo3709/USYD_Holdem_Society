@@ -1,5 +1,6 @@
 // Replace with the deployed Apps Script Web App URL (same as in docs/main.js).
 const API_BASE = 'https://script.google.com/macros/s/AKfycbzn3FsmAThFnfDEEamvjC4FuZDcdOb8dgNo5nunOaf7D-l-1iwxw0g0wD7pQlQk2wZP/exec';
+const ADMIN_PASSCODE_KEY = 'uhs_admin_passcode';
 const DEFAULT_POINTS = {
   1: 200,
   2: 150,
@@ -16,9 +17,17 @@ const form = document.getElementById('result-form');
 const statusBox = document.getElementById('status');
 const labelInput = document.getElementById('label');
 
+let adminPasscode = sessionStorage.getItem(ADMIN_PASSCODE_KEY) || null;
+
 init();
 
 function init() {
+  if (!ensurePasscode()) {
+    toggleForm(true);
+    showStatus('error', 'Admin passcode required. Refresh to retry.');
+    return;
+  }
+
   if (labelInput) {
     labelInput.value = suggestLabel();
   }
@@ -37,6 +46,7 @@ function init() {
       const payload = {
         label: labelInput.value.trim(),
         placements,
+        passcode: adminPasscode,
       };
       const response = await fetch(`${API_BASE}?resource=game`, {
         method: 'POST',
@@ -45,6 +55,14 @@ function init() {
 
       const body = await response.json().catch(() => ({}));
       if (!body.ok) {
+        if (body.code === 'PASSCODE') {
+          handleAuthFailure('Invalid passcode. Please refresh and enter the correct code.');
+          return;
+        }
+        if (body.code === 'EMAIL') {
+          handleAuthFailure('Your Google account is not authorized to submit results.');
+          return;
+        }
         showStatus('error', formatErrors(body));
         return;
       }
@@ -104,6 +122,29 @@ function clearStatus() {
   statusBox.hidden = true;
   statusBox.textContent = '';
   statusBox.classList.remove('admin-status--error', 'admin-status--success');
+}
+
+function ensurePasscode() {
+  if (adminPasscode) {
+    return true;
+  }
+  const input = window.prompt('Enter admin passcode');
+  if (!input) {
+    return false;
+  }
+  adminPasscode = input.trim();
+  if (!adminPasscode) {
+    return false;
+  }
+  sessionStorage.setItem(ADMIN_PASSCODE_KEY, adminPasscode);
+  return true;
+}
+
+function handleAuthFailure(message) {
+  sessionStorage.removeItem(ADMIN_PASSCODE_KEY);
+  adminPasscode = null;
+  toggleForm(true);
+  showStatus('error', message);
 }
 
 function showStatus(type, message) {
