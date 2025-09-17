@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API测试页面</h1>
+    <button id="test-btn">测试API连接</button>
+    <div id="result"></div>
+
+    <script>
+        const API_BASE = 'https://script.google.com/macros/s/AKfycbwnt_x7f1ly83d7LqYKNR0l16vg9rI0iSlbRiUCl8SkttsHEVNcSrqdOlwYKalnVpqV/exec';
+        
+        document.getElementById('test-btn').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '正在测试...';
+            
+            try {
+                console.log('开始请求:', `${API_BASE}?resource=leaderboard`);
+                
+                const response = await fetch(`${API_BASE}?resource=leaderboard`);
+                console.log('响应状态:', response.status);
+                console.log('响应headers:', response.headers);
+                
+                const text = await response.text();
+                console.log('响应原始文本:', text);
+                
+                const data = JSON.parse(text);
+                console.log('解析后的JSON:', data);
+                
+                resultDiv.innerHTML = `
+                    <h3>测试成功！</h3>
+                    <p>状态: ${response.status}</p>
+                    <p>数据: ${JSON.stringify(data, null, 2)}</p>
+                `;
+                
+            } catch (error) {
+                console.error('测试失败:', error);
+                resultDiv.innerHTML = `
+                    <h3>测试失败</h3>
+                    <p>错误: ${error.message}</p>
+                    <p>详情请查看浏览器控制台</p>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
