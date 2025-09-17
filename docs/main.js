@@ -1,4 +1,5 @@
-const API_BASE = '/api';
+// Replace this value with your published Apps Script Web App URL.
+const API_BASE = 'https://script.google.com/macros/s/AKfycbzn3FsmAThFnfDEEamvjC4FuZDcdOb8dgNo5nunOaf7D-l-1iwxw0g0wD7pQlQk2wZP/exec';
 const leaderboardBody = document.getElementById('leaderboard-body');
 const searchInput = document.getElementById('search');
 const playerCountEl = document.getElementById('player-count');
@@ -58,17 +59,17 @@ async function loadLeaderboard() {
   try {
     refreshBtn.disabled = true;
     refreshBtn.textContent = 'Loading…';
-    const response = await fetch(`${API_BASE}/leaderboard`);
-    if (!response.ok) {
-      throw new Error(`Failed to load leaderboard (${response.status})`);
-    }
+    const response = await fetch(`${API_BASE}?resource=leaderboard`);
     const payload = await response.json();
+    if (!payload.ok) {
+      throw new Error(payload.error || 'Failed to load leaderboard');
+    }
     players = payload.players || [];
     filteredPlayers = [...players];
     renderLeaderboard();
   } catch (error) {
     console.error(error);
-    alert('Unable to fetch leaderboard. Please check that the backend is running.');
+    alert('Unable to fetch leaderboard. Please check that the Google Sheets backend is reachable.');
   } finally {
     refreshBtn.disabled = false;
     refreshBtn.textContent = 'Refresh';
@@ -109,11 +110,11 @@ function renderLeaderboard() {
 async function showPlayerDetail(playerId) {
   try {
     panel.setAttribute('hidden', '');
-    const response = await fetch(`${API_BASE}/players/${playerId}`);
-    if (!response.ok) {
-      throw new Error(`Failed to load player ${playerId}`);
-    }
+    const response = await fetch(`${API_BASE}?resource=player&id=${playerId}`);
     const payload = await response.json();
+    if (!payload.ok) {
+      throw new Error(payload.error || `Failed to load player ${playerId}`);
+    }
     const { player, history } = payload;
     panelNickname.textContent = player.nickname;
     panelPoints.textContent = player.total_points.toLocaleString();
@@ -141,7 +142,7 @@ async function showPlayerDetail(playerId) {
     panel.removeAttribute('hidden');
   } catch (error) {
     console.error(error);
-    alert('Unable to fetch player details.');
+    alert('Unable to fetch player details from Google Sheets backend.');
   }
 }
 

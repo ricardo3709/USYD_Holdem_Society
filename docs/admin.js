@@ -1,4 +1,5 @@
-const API_BASE = '/api';
+// Replace with the deployed Apps Script Web App URL (same as in docs/main.js).
+const API_BASE = 'https://script.google.com/macros/s/AKfycbzn3FsmAThFnfDEEamvjC4FuZDcdOb8dgNo5nunOaf7D-l-1iwxw0g0wD7pQlQk2wZP/exec';
 const DEFAULT_POINTS = {
   1: 200,
   2: 150,
@@ -37,14 +38,14 @@ function init() {
         label: labelInput.value.trim(),
         placements,
       };
-      const response = await fetch(`${API_BASE}/games`, {
+      const response = await fetch(`${API_BASE}?resource=game`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
       const body = await response.json().catch(() => ({}));
-      if (!response.ok) {
+      if (!body.ok) {
         showStatus('error', formatErrors(body));
         return;
       }
@@ -114,11 +115,13 @@ function showStatus(type, message) {
 }
 
 function formatSummary(body) {
-  const applied = Array.isArray(body.applied) ? body.applied.join(', ') : 'No updates applied.';
+  const applied = Array.isArray(body.applied) && body.applied.length
+    ? body.applied.join(', ')
+    : 'Results recorded';
   if (body.errors?.length) {
     return `${applied}. Issues: ${body.errors.join('; ')}`;
   }
-  return `Results submitted: ${applied}. Leaderboard refreshed.`;
+  return `${applied}. Leaderboard recalculated.`;
 }
 
 function formatErrors(body) {
