@@ -1,5 +1,5 @@
 // Replace this value with your published Apps Script Web App URL.
-const API_BASE = 'https://script.google.com/macros/s/AKfycbzn3FsmAThFnfDEEamvjC4FuZDcdOb8dgNo5nunOaf7D-l-1iwxw0g0wD7pQlQk2wZP/exec';
+const API_BASE = 'https://script.google.com/macros/s/AKfycbwb2WtQvB9VOwFOG6To2j58LDvFwdZYQkY2x2yXF8t2VVj4Y0NtcMAzS1tRMfuj58f3/exec';
 const leaderboardBody = document.getElementById('leaderboard-body');
 const searchInput = document.getElementById('search');
 const playerCountEl = document.getElementById('player-count');
