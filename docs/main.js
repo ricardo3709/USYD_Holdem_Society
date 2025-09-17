@@ -1,5 +1,6 @@
 // Replace this value with your published Apps Script Web App URL.
-const API_BASE = 'https://script.google.com/macros/s/AKfycbwb2WtQvB9VOwFOG6To2j58LDvFwdZYQkY2x2yXF8t2VVj4Y0NtcMAzS1tRMfuj58f3/exec';
+// TODO: 请将下面的URL替换为你部署的统一Apps Script的实际URL
+const API_BASE = 'https://script.google.com/macros/s/AKfycbwnt_x7f1ly83d7LqYKNR0l16vg9rI0iSlbRiUCl8SkttsHEVNcSrqdOlwYKalnVpqV/exec';
 const leaderboardBody = document.getElementById('leaderboard-body');
 const searchInput = document.getElementById('search');
 const playerCountEl = document.getElementById('player-count');

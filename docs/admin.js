@@ -1,5 +1,6 @@
 // Replace with the deployed Apps Script Web App URL (same as in docs/main.js).
-const API_BASE = 'https://script.google.com/macros/s/AKfycbzn3FsmAThFnfDEEamvjC4FuZDcdOb8dgNo5nunOaf7D-l-1iwxw0g0wD7pQlQk2wZP/exec';
+// TODO: 请将下面的URL替换为你部署的统一Apps Script的实际URL
+const API_BASE = 'https://script.google.com/macros/s/AKfycbwnt_x7f1ly83d7LqYKNR0l16vg9rI0iSlbRiUCl8SkttsHEVNcSrqdOlwYKalnVpqV/exec';
 const ADMIN_PASSCODE_KEY = 'uhs_admin_passcode';
 const DEFAULT_POINTS = {
   1: 200,
