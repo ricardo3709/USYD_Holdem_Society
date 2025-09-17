@@ -134,7 +134,6 @@ async function showPlayerDetail(playerId) {
         li.innerHTML = `
           <span>${positive}${item.delta}</span>
           <span>${item.reason || '—'}</span>
-          <span>${formatTimestamp(item.created_at)}</span>
         `;
         panelHistory.appendChild(li);
       });
