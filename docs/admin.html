@@ -4,116 +4,70 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin – Texas Hold'em Results</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="admin.js" type="module"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      font-family: 'Montserrat', system-ui, sans-serif;
+      color-scheme: light dark;
+      --bg: #0f172a;
+      --surface: rgba(18, 27, 53, 0.9);
+      --text: #eef2ff;
+      --text-muted: #9ca3af;
+      --accent: #f97316;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f172a, #1d2436 45%, #020617 80%);
+      color: var(--text);
+      padding: 1.5rem;
+    }
+    .card {
+      width: min(520px, 100%);
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 2.25rem 2rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 25px 60px -40px rgba(0, 0, 0, 0.8);
+      text-align: center;
+    }
+    h1 { margin: 0 0 1rem; font-size: 1.9rem; }
+    p { margin: 0.6rem 0 1.5rem; color: var(--text-muted); line-height: 1.5; }
+    a.button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      border-radius: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: var(--text);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    a.button:hover {
+      transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.22);
+    }
+    small { display: block; margin-top: 1.25rem; color: var(--text-muted); }
+  </style>
 </head>
-<body class="admin-body">
-  <div class="page page--narrow">
-    <header class="hero hero--compact">
-      <div class="hero__copy">
-        <h1>Game Results Entry</h1>
-        <p class="hero__tagline">Submit final table standings to update the leaderboard.</p>
-      </div>
-      <div class="hero__actions hero__actions--admin">
-        <a href="/" class="button">View Leaderboard</a>
-      </div>
-    </header>
-
-    <main class="admin-main">
-      <form id="result-form" class="admin-card" autocomplete="off">
-        <fieldset class="admin-fieldset">
-          <label class="admin-label" for="label">Game label</label>
-          <input id="label" name="label" type="text" class="admin-input" placeholder="e.g. March 12 Weekly Final Table" required />
-        </fieldset>
-
-        <section class="admin-table-wrapper">
-          <table class="table admin-table" role="grid">
-            <thead>
-              <tr>
-                <th scope="col">Rank</th>
-                <th scope="col">Nickname</th>
-                <th scope="col">Points Awarded</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr data-rank-row="1">
-                <td>1</td>
-                <td>
-                  <input type="text" name="rank-1" class="admin-input" placeholder="Champion nickname" />
-                </td>
-                <td class="admin-points" data-rank="1">200</td>
-              </tr>
-              <tr data-rank-row="2">
-                <td>2</td>
-                <td>
-                  <input type="text" name="rank-2" class="admin-input" placeholder="2nd place" />
-                </td>
-                <td class="admin-points" data-rank="2">150</td>
-              </tr>
-              <tr data-rank-row="3">
-                <td>3</td>
-                <td>
-                  <input type="text" name="rank-3" class="admin-input" placeholder="3rd place" />
-                </td>
-                <td class="admin-points" data-rank="3">120</td>
-              </tr>
-              <tr data-rank-row="4">
-                <td>4</td>
-                <td>
-                  <input type="text" name="rank-4" class="admin-input" placeholder="4th place" />
-                </td>
-                <td class="admin-points" data-rank="4">100</td>
-              </tr>
-              <tr data-rank-row="5">
-                <td>5</td>
-                <td>
-                  <input type="text" name="rank-5" class="admin-input" placeholder="5th place" />
-                </td>
-                <td class="admin-points" data-rank="5">80</td>
-              </tr>
-              <tr data-rank-row="6">
-                <td>6</td>
-                <td>
-                  <input type="text" name="rank-6" class="admin-input" placeholder="6th place" />
-                </td>
-                <td class="admin-points" data-rank="6">60</td>
-              </tr>
-              <tr data-rank-row="7">
-                <td>7</td>
-                <td>
-                  <input type="text" name="rank-7" class="admin-input" placeholder="7th place" />
-                </td>
-                <td class="admin-points" data-rank="7">50</td>
-              </tr>
-              <tr data-rank-row="8">
-                <td>8</td>
-                <td>
-                  <input type="text" name="rank-8" class="admin-input" placeholder="8th place" />
-                </td>
-                <td class="admin-points" data-rank="8">40</td>
-              </tr>
-              <tr data-rank-row="9">
-                <td>9</td>
-                <td>
-                  <input type="text" name="rank-9" class="admin-input" placeholder="9th place" />
-                </td>
-                <td class="admin-points" data-rank="9">30</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <div class="admin-actions">
-          <button class="button" type="submit">Submit Results</button>
-        </div>
-      </form>
-
-      <section id="status" class="admin-status" aria-live="polite" hidden></section>
-    </main>
-
-    <footer class="footer">
-      <small>Authorized users only. Entries instantly affect the local leaderboard.</small>
-    </footer>
+<body>
+  <div class="card">
+    <h1>Admin Portal Moved</h1>
+    <p>Score submissions now happen via our secured Google Apps Script portal. You must sign in with an approved Google account and enter the admin passcode.</p>
+    <a class="button" href="https://script.google.com/macros/s/AKfycbzn3FsmAThFnfDEEamvjC4FuZDcdOb8dgNo5nunOaf7D-l-1iwxw0g0wD7pQlQk2wZP/exec?resource=admin" target="_blank" rel="noopener">
+      Go to Admin Portal
+    </a>
+    <small>Need access? Contact the committee to add your Google address to the whitelist.</small>
   </div>
 </body>
 </html>
