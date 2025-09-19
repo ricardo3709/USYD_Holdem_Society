@@ -126,48 +126,48 @@
 
   <script>
     const ADMIN_URL = 'https://script.google.com/macros/s/AKfycbwnt_x7f1ly83d7LqYKNR0l16vg9rI0iSlbRiUCl8SkttsHEVNcSrqdOlwYKalnVpqV/exec?resource=admin';
-    const CORRECT_PASSCODE = 'usyd_holdem_1144@';
-    
-    document.getElementById('admin-form').addEventListener('submit', function(e) {
+    // 只放 HASH，不放明文
+    const CORRECT_HASH = '2b6f2ad6a9748e244de9a18ed43a449ba004f2a548d334b83db92378f317b9a0';
+  
+    async function sha256Hex(msg) {
+      const enc = new TextEncoder().encode(msg);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+  
+    document.getElementById('admin-form').addEventListener('submit', async function(e) {
       e.preventDefault();
-      
-      const passcode = document.getElementById('passcode').value;
+      const passEl = document.getElementById('passcode');
       const submitBtn = document.getElementById('submit-btn');
       const errorDiv = document.getElementById('error-message');
-      
-      // 隐藏错误信息
+  
       errorDiv.style.display = 'none';
-      
-      if (passcode === CORRECT_PASSCODE) {
-        // 密码正确，跳转到管理界面
+  
+      const hash = await sha256Hex(passEl.value);
+      if (hash === CORRECT_HASH) {
         submitBtn.textContent = 'Redirecting...';
         submitBtn.disabled = true;
-        
-        // 存储验证状态
+  
+        // 可选：仅用于前端 UI 的纪念标记，不作为安全凭证
         sessionStorage.setItem('admin_verified', 'true');
-        
-        // 跳转到Apps Script管理界面，并传递令牌
-        const adminUrlWithToken = ADMIN_URL + '&token=' + encodeURIComponent(passcode);
-        window.open(adminUrlWithToken, '_blank');
-        
-        // 重置按钮
+  
+        // 不要把明文或 hash 放在 URL 里（避免被日志/历史记录/Referer 收集）
+        window.open(ADMIN_URL, '_blank');
+  
         setTimeout(() => {
           submitBtn.textContent = 'Access Admin Panel';
           submitBtn.disabled = false;
-          document.getElementById('passcode').value = '';
-        }, 2000);
-        
+          passEl.value = '';
+        }, 1200);
       } else {
-        // 密码错误
         errorDiv.textContent = 'Incorrect passcode. Please try again.';
         errorDiv.style.display = 'block';
-        document.getElementById('passcode').value = '';
-        document.getElementById('passcode').focus();
+        passEl.value = '';
+        passEl.focus();
       }
     });
-    
-    // 页面加载时清除验证状态
-    sessionStorage.removeItem('admin_verified');
+      // 页面加载时清除验证状态
+      sessionStorage.removeItem('admin_verified');
   </script>
 </body>
 </html>
