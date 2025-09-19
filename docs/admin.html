@@ -126,9 +126,16 @@
 
   <script>
     const ADMIN_URL = 'https://script.google.com/macros/s/AKfycbwnt_x7f1ly83d7LqYKNR0l16vg9rI0iSlbRiUCl8SkttsHEVNcSrqdOlwYKalnVpqV/exec?resource=admin';
-    const CORRECT_PASSCODE = 'usydtexasholdem3709@';
+    // 使用SHA-256哈希值而不是明文密码
+    const CORRECT_PASSCODE_HASH = '2b6f2ad6a9748e244de9a18ed43a449ba004f2a548d334b83db92378f317b9a0';
     
-    document.getElementById('admin-form').addEventListener('submit', function(e) {
+    // SHA-256哈希函数
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.prototype.map.call(new Uint8Array(buf), x=>(('00'+x.toString(16)).slice(-2))).join('');
+    }
+    
+    document.getElementById('admin-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       
       const passcode = document.getElementById('passcode').value;
@@ -138,7 +145,10 @@
       // 隐藏错误信息
       errorDiv.style.display = 'none';
       
-      if (passcode === CORRECT_PASSCODE) {
+      // 计算输入密码的哈希值
+      const passcodeHash = await sha256(passcode);
+      
+      if (passcodeHash === CORRECT_PASSCODE_HASH) {
         // 密码正确，跳转到管理界面
         submitBtn.textContent = 'Redirecting...';
         submitBtn.disabled = true;
@@ -146,8 +156,9 @@
         // 存储验证状态
         sessionStorage.setItem('admin_verified', 'true');
         
-        // 跳转到Apps Script管理界面
-        window.open(ADMIN_URL, '_blank');
+        // 跳转到Apps Script管理界面，并传递令牌
+        const adminUrlWithToken = ADMIN_URL + '&token=' + encodeURIComponent(passcode);
+        window.open(adminUrlWithToken, '_blank');
         
         // 重置按钮
         setTimeout(() => {
