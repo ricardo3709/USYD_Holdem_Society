@@ -160,7 +160,8 @@
           passEl.value = '';
         }, 1200);
       } else {
-        errorDiv.textContent = 'Incorrect passcode. Please try again.';
+        // errorDiv.textContent = 'Incorrect passcode. Please try again.';
+        errorDiv.textContent = hash;
         errorDiv.style.display = 'block';
         passEl.value = '';
         passEl.focus();
