@@ -24,6 +24,7 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, {
 
 let players = [];
 let filteredPlayers = [];
+let playerDetailsCache = new Map(); // 添加玩家详情缓存
 
 init();
 
@@ -67,6 +68,10 @@ async function loadLeaderboard() {
     }
     players = payload.players || [];
     filteredPlayers = [...players];
+    
+    // 清理玩家详情缓存，确保数据是最新的
+    playerDetailsCache.clear();
+    
     renderLeaderboard();
   } catch (error) {
     console.error(error);
@@ -110,13 +115,40 @@ function renderLeaderboard() {
 
 async function showPlayerDetail(playerId) {
   try {
+    // 先隐藏面板
     panel.setAttribute('hidden', '');
-    const response = await fetch(`${API_BASE}?resource=player&id=${playerId}`);
-    const payload = await response.json();
-    if (!payload.ok) {
-      throw new Error(payload.error || `Failed to load player ${playerId}`);
+    
+    // 添加加载状态
+    panelNickname.textContent = 'Loading...';
+    panelPoints.textContent = '—';
+    panelSlogan.textContent = '—';
+    panelFinals.textContent = '—';
+    panelHistory.innerHTML = '<li>Loading history...</li>';
+    
+    // 立即显示面板（带加载状态）
+    panel.removeAttribute('hidden');
+    
+    let payload;
+    
+    // 检查缓存
+    if (playerDetailsCache.has(playerId)) {
+      payload = playerDetailsCache.get(playerId);
+    } else {
+      // 没有缓存，从服务器获取
+      const response = await fetch(`${API_BASE}?resource=player&id=${playerId}`);
+      payload = await response.json();
+      if (!payload.ok) {
+        throw new Error(payload.error || `Failed to load player ${playerId}`);
+      }
+      
+      // 缓存结果（5分钟过期）
+      playerDetailsCache.set(playerId, payload);
+      setTimeout(() => playerDetailsCache.delete(playerId), 5 * 60 * 1000);
     }
+    
     const { player, history } = payload;
+    
+    // 更新UI
     panelNickname.textContent = player.nickname;
     panelPoints.textContent = player.total_points.toLocaleString();
     panelSlogan.textContent = player.slogan || 'No slogan yet.';
@@ -139,10 +171,13 @@ async function showPlayerDetail(playerId) {
       });
     }
 
-    panel.removeAttribute('hidden');
   } catch (error) {
     console.error(error);
-    alert('Unable to fetch player details from Google Sheets backend.');
+    panelNickname.textContent = 'Error';
+    panelPoints.textContent = '—';
+    panelSlogan.textContent = 'Unable to load player details';
+    panelFinals.textContent = '—';
+    panelHistory.innerHTML = '<li>Failed to load history</li>';
   }
 }
 
