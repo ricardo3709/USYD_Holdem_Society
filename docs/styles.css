@@ -173,15 +173,10 @@ main {
 }
 
 .board__hint {
-  margin: 0 0 1rem 0;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 183, 3, 0.1);
-  border: 1px solid rgba(255, 183, 3, 0.2);
-  border-radius: 8px;
+  margin: 0.25rem 0 1rem;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   text-align: center;
-  font-style: italic;
 }
 
 .board__wrapper {
