@@ -13,32 +13,56 @@ const DEFAULT_POINTS = {
   8: 40,
   9: 30,
 };
+const DEFAULT_BOARD_ID = 'alltime';
 
 const form = document.getElementById('result-form');
 const statusBox = document.getElementById('status');
 const labelInput = document.getElementById('label');
+const boardSelect = document.getElementById('board-select');
 
 let adminPasscode = sessionStorage.getItem(ADMIN_PASSCODE_KEY) || null;
+let boards = [];
+let activeBoardId = DEFAULT_BOARD_ID;
 
 init();
 
 function init() {
+  if (!form) {
+    return;
+  }
+
   if (!ensurePasscode()) {
     toggleForm(true);
     showStatus('error', 'Admin passcode required. Refresh to retry.');
     return;
   }
 
+  loadBoards();
+
   if (labelInput) {
     labelInput.value = suggestLabel();
   }
 
-  form?.addEventListener('submit', async (event) => {
+  if (boardSelect) {
+    boardSelect.addEventListener('change', () => {
+      activeBoardId = getSelectedBoardId();
+      if (labelInput && (!labelInput.value || labelInput.value.startsWith('Game '))) {
+        labelInput.value = suggestLabel();
+      }
+    });
+  }
+
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
     clearStatus();
 
     const placements = collectPlacements();
     if (!placements) {
+      return;
+    }
+    const boardId = getSelectedBoardId();
+    if (boardSelect && !boardId) {
+      showStatus('error', 'Select a leaderboard / season before submitting.');
       return;
     }
 
@@ -48,6 +72,7 @@ function init() {
         label: labelInput.value.trim(),
         placements,
         passcode: adminPasscode,
+        board_id: boardId,
       };
       const response = await fetch(`${API_BASE}?resource=game`, {
         method: 'POST',
@@ -68,8 +93,12 @@ function init() {
         return;
       }
 
-      showStatus('success', formatSummary(body));
+      showStatus('success', formatSummary(body, getBoardLabel(boardId)));
       form.reset();
+      if (boardSelect) {
+        boardSelect.value = boardId;
+      }
+      activeBoardId = boardId;
       if (labelInput) {
         labelInput.value = suggestLabel();
       }
@@ -80,6 +109,60 @@ function init() {
       toggleForm(false);
     }
   });
+}
+
+async function loadBoards() {
+  if (!boardSelect) {
+    return;
+  }
+
+  boardSelect.disabled = true;
+  boardSelect.innerHTML = '<option value=\"\">Loading…</option>';
+
+  try {
+    const response = await fetch(`${API_BASE}?resource=leaderboard`);
+    const body = await response.json();
+    if (!body.ok) {
+      throw new Error(body.error || 'Failed to load leaderboards');
+    }
+    boards = Array.isArray(body.boards) ? body.boards : [];
+    activeBoardId = body.activeBoard || (boards[0]?.id ?? DEFAULT_BOARD_ID);
+    renderBoardOptions();
+  } catch (error) {
+    console.error('Failed to load boards:', error);
+    boards = [{ id: DEFAULT_BOARD_ID, label: 'All Time' }];
+    activeBoardId = DEFAULT_BOARD_ID;
+    renderBoardOptions();
+  }
+}
+
+function renderBoardOptions() {
+  if (!boardSelect) {
+    return;
+  }
+
+  boardSelect.innerHTML = '';
+
+  const list = boards.length ? boards : [{ id: DEFAULT_BOARD_ID, label: 'All Time' }];
+  list.forEach((board) => {
+    const option = document.createElement('option');
+    option.value = board.id;
+    option.textContent = board.label || board.id;
+    boardSelect.appendChild(option);
+  });
+
+  if (!activeBoardId || !list.some((board) => board.id === activeBoardId)) {
+    activeBoardId = list[0].id;
+  }
+
+  boardSelect.value = activeBoardId;
+  boardSelect.disabled = false;
+
+  activeBoardId = boardSelect.value || activeBoardId || DEFAULT_BOARD_ID;
+
+  if (labelInput && (!labelInput.value || labelInput.value.startsWith('Game '))) {
+    labelInput.value = suggestLabel();
+  }
 }
 
 function collectPlacements() {
@@ -113,7 +196,10 @@ function collectPlacements() {
 }
 
 function toggleForm(disabled) {
-  const elements = form.querySelectorAll('input, button');
+  if (!form) {
+    return;
+  }
+  const elements = form.querySelectorAll('input, button, select');
   elements.forEach((element) => {
     element.disabled = disabled;
   });
@@ -155,14 +241,20 @@ function showStatus(type, message) {
   statusBox.classList.toggle('admin-status--success', type === 'success');
 }
 
-function formatSummary(body) {
+function formatSummary(body, boardLabel) {
   const applied = Array.isArray(body.applied) && body.applied.length
     ? body.applied.join(', ')
     : 'Results recorded';
-  if (body.errors?.length) {
-    return `${applied}. Issues: ${body.errors.join('; ')}`;
+  let message = `${applied}.`;
+  if (boardLabel) {
+    message += ` Saved to ${boardLabel}.`;
   }
-  return `${applied}. Leaderboard recalculated.`;
+  if (body.errors?.length) {
+    message += ` Issues: ${body.errors.join('; ')}`;
+  } else {
+    message += ' Leaderboard recalculated.';
+  }
+  return message;
 }
 
 function formatErrors(body) {
@@ -170,6 +262,29 @@ function formatErrors(body) {
     return `No updates applied. Issues: ${body.errors.join('; ')}`;
   }
   return body?.error || 'Unable to submit game results.';
+}
+
+function getSelectedBoardId() {
+  if (!boardSelect) {
+    return activeBoardId || DEFAULT_BOARD_ID;
+  }
+  const value = boardSelect.value ? boardSelect.value.trim() : '';
+  if (value) {
+    activeBoardId = value;
+    return value;
+  }
+  return activeBoardId || DEFAULT_BOARD_ID;
+}
+
+function getBoardLabel(boardId) {
+  const lookup = boards.find((board) => board.id === boardId);
+  if (lookup?.label) {
+    return lookup.label.trim();
+  }
+  if (!boardId || boardId === DEFAULT_BOARD_ID) {
+    return 'All Time';
+  }
+  return boardId.trim();
 }
 
 function suggestLabel() {
@@ -181,5 +296,6 @@ function suggestLabel() {
     hour: '2-digit',
     minute: '2-digit',
   });
-  return `Game ${formatter.format(now)}`;
+  const boardLabel = getBoardLabel(activeBoardId);
+  return `Game ${formatter.format(now)}${boardLabel ? ` – ${boardLabel}` : ''}`;
 }
