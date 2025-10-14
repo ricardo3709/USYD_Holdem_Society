@@ -6,6 +6,7 @@ const searchInput = document.getElementById('search');
 const playerCountEl = document.getElementById('player-count');
 const emptyStateEl = document.getElementById('empty-state');
 const refreshBtn = document.getElementById('refresh');
+const boardSelect = document.getElementById('leaderboard-select');
 const panel = document.getElementById('player-panel');
 const panelClose = document.getElementById('panel-close');
 const panelNickname = document.getElementById('panel-nickname');
@@ -25,6 +26,8 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, {
 let players = [];
 let filteredPlayers = [];
 let playerDetailsCache = new Map(); // 添加玩家详情缓存
+let availableBoards = [];
+let currentBoard = '';
 
 init();
 
@@ -35,16 +38,22 @@ function init() {
 
 function attachEvents() {
   searchInput.addEventListener('input', () => {
-    const term = searchInput.value.trim().toLowerCase();
-    filteredPlayers = players.filter((player) =>
-      player.nickname.toLowerCase().includes(term),
-    );
+    applySearchFilter();
     renderLeaderboard();
   });
 
   refreshBtn.addEventListener('click', () => {
     loadLeaderboard();
   });
+
+  if (boardSelect) {
+    boardSelect.addEventListener('change', (event) => {
+      currentBoard = event.target.value;
+      // Clear search to avoid filtering with stale text when board swaps
+      searchInput.value = '';
+      loadLeaderboard(currentBoard);
+    });
+  }
 
   panelClose.addEventListener('click', () => {
     panel.setAttribute('hidden', '');
@@ -57,17 +66,27 @@ function attachEvents() {
   });
 }
 
-async function loadLeaderboard() {
+async function loadLeaderboard(boardId = currentBoard) {
   try {
     refreshBtn.disabled = true;
     refreshBtn.textContent = 'Loading…';
-    const response = await fetch(`${API_BASE}?resource=leaderboard`);
+    if (boardSelect) {
+      boardSelect.disabled = true;
+    }
+
+    const params = new URLSearchParams({ resource: 'leaderboard' });
+    if (boardId) {
+      params.set('board', boardId);
+    }
+
+    const response = await fetch(`${API_BASE}?${params.toString()}`);
     const payload = await response.json();
     if (!payload.ok) {
       throw new Error(payload.error || 'Failed to load leaderboard');
     }
     players = payload.players || [];
-    filteredPlayers = [...players];
+    updateBoardSelector(payload.boards, payload.activeBoard ?? boardId);
+    applySearchFilter();
     
     // 清理玩家详情缓存，确保数据是最新的
     playerDetailsCache.clear();
@@ -79,6 +98,9 @@ async function loadLeaderboard() {
   } finally {
     refreshBtn.disabled = false;
     refreshBtn.textContent = 'Refresh';
+    if (boardSelect) {
+      boardSelect.disabled = !availableBoards.length;
+    }
   }
 }
 
@@ -197,4 +219,66 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function updateBoardSelector(boardList = [], suggestedActiveBoard) {
+  if (!boardSelect) return;
+
+  const normalizedBoards = Array.isArray(boardList)
+    ? boardList
+        .map((board) => ({
+          id:
+            board?.id ??
+            board?.value ??
+            board?.slug ??
+            '',
+          label:
+            board?.label ??
+            board?.name ??
+            board?.title ??
+            board?.id ??
+            board?.value ??
+            'Leaderboard',
+        }))
+        .filter((board) => board.id)
+    : [];
+
+  if (!normalizedBoards.length) {
+    availableBoards = [];
+    currentBoard = '';
+    boardSelect.innerHTML = '';
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = 'All players';
+    boardSelect.appendChild(option);
+    boardSelect.disabled = true;
+    return;
+  }
+
+  availableBoards = normalizedBoards;
+  boardSelect.innerHTML = '';
+  normalizedBoards.forEach((board) => {
+    const option = document.createElement('option');
+    option.value = board.id;
+    option.textContent = board.label;
+    boardSelect.appendChild(option);
+  });
+
+  const preferred = suggestedActiveBoard || currentBoard || normalizedBoards[0].id;
+  boardSelect.value = normalizedBoards.some((board) => board.id === preferred)
+    ? preferred
+    : normalizedBoards[0].id;
+  currentBoard = boardSelect.value;
+  boardSelect.disabled = false;
+}
+
+function applySearchFilter() {
+  const term = searchInput.value.trim().toLowerCase();
+  if (!term) {
+    filteredPlayers = [...players];
+    return;
+  }
+  filteredPlayers = players.filter((player) =>
+    player.nickname.toLowerCase().includes(term),
+  );
 }

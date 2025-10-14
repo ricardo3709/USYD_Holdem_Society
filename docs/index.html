@@ -34,8 +34,14 @@
     <main>
       <section class="board" aria-labelledby="leaderboard-title">
         <div class="board__header">
-          <h2 id="leaderboard-title">Leaderboard</h2>
-          <span class="board__meta"><span id="player-count">0</span> players</span>
+          <div class="board__title">
+            <h2 id="leaderboard-title">Leaderboard</h2>
+            <span class="board__meta"><span id="player-count">0</span> players</span>
+          </div>
+          <label class="board__selector" for="leaderboard-select">
+            <span class="board__selector-label">Season</span>
+            <select id="leaderboard-select" class="board__select" aria-label="Choose leaderboard"></select>
+          </label>
         </div>
         <p class="board__hint">Click on the player name to see game history</p>
         <div class="board__wrapper">

@@ -158,8 +158,16 @@ main {
 .board__header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.board__title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
 .board__header h2 {
@@ -170,6 +178,41 @@ main {
 .board__meta {
   color: var(--text-muted);
   font-size: 0.85rem;
+}
+
+.board__selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.board__selector-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.board__select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--text-primary);
+  padding: 0.4rem 1.5rem 0.4rem 0.75rem;
+  font: inherit;
+  cursor: pointer;
+  position: relative;
+}
+
+.board__select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+}
+
+.board__select option {
+  color: var(--text-primary);
 }
 
 .board__hint {
