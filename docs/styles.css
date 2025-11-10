@@ -361,13 +361,14 @@ main {
   padding: 0.45rem 0.75rem;
   border-radius: 10px;
   background: rgba(15, 23, 42, 0.95);
-  color: var(--text);
-  border: 1px solid var(--border);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 25px 45px -25px rgba(2, 6, 23, 0.8);
   font-size: 0.85rem;
   max-width: min(260px, 80vw);
   transform: translateX(-50%);
   pointer-events: none;
+  backdrop-filter: blur(12px);
 }
 
 .badge-tooltip[hidden] {
@@ -770,5 +771,12 @@ main {
 
   .table tbody tr:hover {
     background: rgba(15, 23, 42, 0.06);
+  }
+
+  .badge-tooltip {
+    background: rgba(255, 255, 255, 0.97);
+    color: #0f172a;
+    border-color: rgba(15, 23, 42, 0.1);
+    box-shadow: 0 25px 45px -25px rgba(15, 23, 42, 0.25);
   }
 }
