@@ -302,6 +302,7 @@ main {
 .badges-cell {
   min-width: 150px;
   white-space: normal;
+  text-align: center;
 }
 
 .badge-stack {
@@ -702,7 +703,12 @@ main {
     gap: 0.75rem;
   }
 
+  .badges-cell {
+    min-width: 80px;
+  }
+
   .badge-stack {
+    justify-content: center;
     gap: 0.35rem;
   }
 
@@ -749,7 +755,10 @@ main {
   .table {
     min-width: 100%;
   }
-
+  
+  .badges-cell {
+    min-width: 70px;
+  }
 }
 
 @media (prefers-color-scheme: light) {
