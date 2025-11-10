@@ -297,7 +297,7 @@ function applySearchFilter() {
 function renderBadgesCell(player) {
   const badgeList = sanitizeBadgeList(player?.badges);
   if (!badgeList.length) {
-    return '<span class="badge-chip badge-chip--empty" aria-label="No badges">—</span>';
+    return '';
   }
   const label = `${player?.nickname ?? 'Player'} badges`;
   return `
