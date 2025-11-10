@@ -299,6 +299,81 @@ main {
   font-size: 1rem;
 }
 
+.badges-cell {
+  min-width: 150px;
+  white-space: normal;
+}
+
+.badge-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.badge-chip {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  border-radius: 999px;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.badge-chip span {
+  pointer-events: none;
+}
+
+.badge-chip:hover,
+.badge-chip:focus-visible {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.badge-chip--empty {
+  cursor: default;
+  border-style: dashed;
+  background: transparent;
+  min-width: auto;
+  height: auto;
+  padding: 0 0.25rem;
+  font-size: 0.95rem;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.badge-chip--empty:hover,
+.badge-chip--empty:focus-visible {
+  transform: none;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.badge-tooltip {
+  position: fixed;
+  z-index: 999;
+  padding: 0.45rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.95);
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: 0 25px 45px -25px rgba(2, 6, 23, 0.8);
+  font-size: 0.85rem;
+  max-width: min(260px, 80vw);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.badge-tooltip[hidden] {
+  display: none;
+}
+
 .empty {
   margin-top: 1rem;
   text-align: center;
@@ -624,6 +699,16 @@ main {
 
   .player-cell {
     gap: 0.75rem;
+  }
+
+  .badge-stack {
+    gap: 0.35rem;
+  }
+
+  .badge-chip {
+    min-width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
   }
 
   .panel {

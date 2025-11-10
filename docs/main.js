@@ -28,6 +28,8 @@ let filteredPlayers = [];
 let playerDetailsCache = new Map(); // 添加玩家详情缓存
 let availableBoards = [];
 let currentBoard = '';
+let badgeTooltipEl;
+let activeBadgeTarget = null;
 
 init();
 
@@ -62,8 +64,13 @@ function attachEvents() {
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       panel.setAttribute('hidden', '');
+      hideBadgeTooltip();
     }
   });
+
+  document.addEventListener('click', handleBadgeClick, true);
+  window.addEventListener('scroll', hideBadgeTooltip, true);
+  window.addEventListener('resize', hideBadgeTooltip);
 }
 
 async function loadLeaderboard(boardId = currentBoard) {
@@ -106,6 +113,7 @@ async function loadLeaderboard(boardId = currentBoard) {
 
 function renderLeaderboard() {
   leaderboardBody.innerHTML = '';
+  hideBadgeTooltip();
   playerCountEl.textContent = filteredPlayers.length.toString();
 
   if (!filteredPlayers.length) {
@@ -126,6 +134,9 @@ function renderLeaderboard() {
             <span class="player-nickname">${escapeHtml(player.nickname)}</span>
           </div>
         </div>
+      </td>
+      <td class="badges-cell">
+        ${renderBadgesCell(player)}
       </td>
       <td>${player.total_points.toLocaleString()}</td>
       <td>${player.finals_played?.toLocaleString?.() ?? player.finals_played ?? 0}</td>
@@ -281,4 +292,123 @@ function applySearchFilter() {
   filteredPlayers = players.filter((player) =>
     player.nickname.toLowerCase().includes(term),
   );
+}
+
+function renderBadgesCell(player) {
+  const badgeList = sanitizeBadgeList(player?.badges);
+  if (!badgeList.length) {
+    return '<span class="badge-chip badge-chip--empty" aria-label="No badges">—</span>';
+  }
+  const label = `${player?.nickname ?? 'Player'} badges`;
+  return `
+    <div class="badge-stack" role="list" aria-label="${escapeHtml(label)}">
+      ${badgeList.map((badge, index) => renderBadgeChip(badge, player?.id, index)).join('')}
+    </div>
+  `;
+}
+
+function renderBadgeChip(badge, playerId, index) {
+  const icon = escapeHtml(badge.icon);
+  const description = escapeHtml(badge.label || 'Achievement');
+  const badgeId = escapeHtml(`${playerId ?? 'player'}-${index}`);
+  return `
+    <button
+      type="button"
+      class="badge-chip"
+      data-tooltip="${description}"
+      data-badge-id="${badgeId}"
+      aria-label="${description}"
+    >
+      <span aria-hidden="true">${icon}</span>
+    </button>
+  `;
+}
+
+function sanitizeBadgeList(badges) {
+  if (!Array.isArray(badges)) {
+    return [];
+  }
+  return badges
+    .map((badge) => {
+      if (!badge) return null;
+      if (typeof badge === 'string') {
+        const trimmed = badge.trim();
+        return trimmed
+          ? { icon: trimmed, label: trimmed }
+          : null;
+      }
+      const icon = String(badge.icon ?? badge.emoji ?? '🏅').trim() || '🏅';
+      const label = String(badge.label ?? badge.text ?? badge.title ?? icon).trim();
+      return { icon, label };
+    })
+    .filter(Boolean)
+    .slice(0, 8);
+}
+
+function handleBadgeClick(event) {
+  const badgeButton = event.target.closest('.badge-chip');
+  if (!badgeButton || badgeButton.classList.contains('badge-chip--empty')) {
+    hideBadgeTooltip();
+    return;
+  }
+  event.stopPropagation();
+  toggleBadgeTooltip(badgeButton);
+}
+
+function toggleBadgeTooltip(target) {
+  const tooltipText = target.dataset.tooltip;
+  if (!tooltipText) {
+    return;
+  }
+  const tooltip = ensureBadgeTooltip();
+  if (activeBadgeTarget === target && !tooltip.hasAttribute('hidden')) {
+    hideBadgeTooltip();
+    return;
+  }
+
+  activeBadgeTarget = target;
+  tooltip.textContent = tooltipText;
+  tooltip.removeAttribute('hidden');
+
+  const targetRect = target.getBoundingClientRect();
+  let left = targetRect.left + targetRect.width / 2;
+  let top = targetRect.top + targetRect.height + 10;
+
+  tooltip.style.left = `${left}px`;
+  tooltip.style.top = `${top}px`;
+
+  const tooltipRect = tooltip.getBoundingClientRect();
+  const minLeft = tooltipRect.width / 2 + 8;
+  const maxLeft = window.innerWidth - tooltipRect.width / 2 - 8;
+  if (left < minLeft) {
+    left = minLeft;
+  } else if (left > maxLeft) {
+    left = maxLeft;
+  }
+  tooltip.style.left = `${left}px`;
+
+  const maxTop = window.innerHeight - tooltipRect.height - 8;
+  if (top > maxTop) {
+    tooltip.style.top = `${Math.max(targetRect.top - tooltipRect.height - 10, 8)}px`;
+  }
+}
+
+function ensureBadgeTooltip() {
+  if (!badgeTooltipEl) {
+    badgeTooltipEl = document.createElement('div');
+    badgeTooltipEl.id = 'badge-tooltip';
+    badgeTooltipEl.className = 'badge-tooltip';
+    badgeTooltipEl.setAttribute('hidden', '');
+    document.body.appendChild(badgeTooltipEl);
+  }
+  return badgeTooltipEl;
+}
+
+function hideBadgeTooltip() {
+  if (!badgeTooltipEl) {
+    return;
+  }
+  badgeTooltipEl.setAttribute('hidden', '');
+  badgeTooltipEl.textContent = '';
+  activeBadgeTarget = null;
 }
