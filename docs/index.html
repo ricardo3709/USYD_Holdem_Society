@@ -2,80 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Texas Hold'em Club Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>USYD Texas Hold'em Society</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
+  <div class="background-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
   <div class="page">
-    <header class="hero">
+    <header class="hero glass-panel">
       <div class="hero__copy">
         <div class="hero__title">
-          <h1>University of Sydney Texas Hold'em Society</h1>
-          <div class="hero__logos">
-            <img src="club_logo.png" alt="Club logo" class="hero__logo" />
-            <!-- <img src="usyd_logo.png" alt="University of Sydney crest" class="hero__logo hero__logo--usyd" /> -->
+          <h1>USYD Poker</h1>
           </div>
-        </div>
-        <p class="hero__tagline">Live ranking of our community's sharpest players.</p>
+        <p class="hero__tagline">University of Sydney Texas Hold'em Society</p>
       </div>
       <div class="hero__actions">
         <label class="search">
-          <span class="search__icon" aria-hidden="true">🔍</span>
-          <input id="search" type="search" placeholder="Search nickname" aria-label="Search nickname" />
+          <span class="search__icon">🔍</span>
+          <input id="search" type="search" placeholder="Search player..." />
         </label>
         <button id="refresh" class="button button--ghost" type="button">Refresh</button>
       </div>
     </header>
 
     <main>
-      <section class="board" aria-labelledby="leaderboard-title">
+      <section class="board glass-panel">
         <div class="board__header">
           <div class="board__title">
-            <h2 id="leaderboard-title">Leaderboard</h2>
-            <span class="board__meta"><span id="player-count">0</span> players</span>
+            <h2>Leaderboard</h2>
+            <span class="board__meta"><span id="player-count">0</span> players active</span>
           </div>
-          <label class="board__selector" for="leaderboard-select">
-            <span class="board__selector-label">Season</span>
-            <select id="leaderboard-select" class="board__select" aria-label="Choose leaderboard"></select>
-          </label>
+          <div class="board__selector">
+            <select id="leaderboard-select" class="board__select"></select>
+          </div>
         </div>
-        <p class="board__hint">Click on the player name to see game history</p>
+        
+        <p class="board__hint">Tap on a player to view stats</p>
+        
         <div class="board__wrapper">
-          <table class="table" role="grid">
+          <table class="table">
             <thead>
               <tr>
-                <th scope="col">Rank</th>
-                <th scope="col">Player</th>
-                <th scope="col">Badges</th>
-                <th scope="col">Points</th>
-                <th scope="col">Final Tables</th>
+                <th>Rank</th>
+                <th>Player</th>
+                <th class="badges-cell">Badges</th>
+                <th>Points</th>
+                <th>Finals</th>
               </tr>
             </thead>
             <tbody id="leaderboard-body"></tbody>
           </table>
         </div>
-        <p id="empty-state" class="empty" hidden>No players yet. Add someone from the admin panel.</p>
+        <p id="empty-state" style="text-align:center; padding: 2rem; color: var(--text-secondary);" hidden>
+          No ranking data available.
+        </p>
       </section>
 
-      <aside id="player-panel" class="panel" aria-live="polite" hidden>
-        <button id="panel-close" class="panel__close" type="button" aria-label="Close player details">×</button>
+      <aside id="player-panel" class="panel glass-panel" hidden>
+        <button id="panel-close" class="panel__close">×</button>
         <div class="panel__content">
-          <h3 id="panel-nickname">Player</h3>
-          <p class="panel__points"><span id="panel-points">0</span> pts</p>
-          <p id="panel-finals" class="panel__meta"></p>
-          <p id="panel-slogan" class="panel__notes"></p>
-          <h4>Recent Activity</h4>
+          <h3 id="panel-nickname">Player Name</h3>
+          <p class="panel__meta">Current Standing</p>
+          <div class="panel__points"><span id="panel-points">0</span></div>
+          
+          <div id="panel-slogan-container">
+            <h4>Signature</h4>
+            <p id="panel-slogan" class="panel__notes"></p>
+          </div>
+
+          <p id="panel-finals" style="color: var(--accent); font-weight: 600; margin-bottom: 1rem;"></p>
+
+          <h4>History (Last 20)</h4>
           <ul id="panel-history" class="panel__history"></ul>
         </div>
       </aside>
     </main>
 
-    <footer class="footer">
-      <small>May the poker gods be with you. by R.</small>
+    <footer style="text-align: center; color: var(--text-secondary); opacity: 0.6; font-size: 0.8rem;">
+      <p>&copy; USYD Texas Hold'em Society</p>
     </footer>
   </div>
 

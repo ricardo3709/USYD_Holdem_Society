@@ -2,131 +2,147 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Admin – Texas Hold'em Results</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      font-family: 'Montserrat', system-ui, sans-serif;
-      color-scheme: light dark;
-      --bg: #0f172a;
-      --surface: rgba(18, 27, 53, 0.9);
-      --text: #eef2ff;
-      --text-muted: #9ca3af;
-      --accent: #f97316;
-      --border: rgba(255, 255, 255, 0.1);
+      font-family: 'Montserrat', sans-serif;
+      --bg-color: #f0f2f5;
+      --text: #1d1d1f;
+      --glass-bg: rgba(255, 255, 255, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.5);
+      --accent: #007aff;
+      --blob-1: #ffcfd2;
+      --blob-2: #cfdfff;
     }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #000000;
+        --text: #f5f5f7;
+        --glass-bg: rgba(30, 30, 30, 0.6);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --accent: #0a84ff;
+        --blob-1: #4f46e5;
+        --blob-2: #db2777;
+      }
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #0f172a, #1d2436 45%, #020617 80%);
+      background-color: var(--bg-color);
       color: var(--text);
       padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
     }
+
+    /* 背景流体 */
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.6;
+    }
+    .b1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: var(--blob-1); }
+    .b2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: var(--blob-2); }
+
     .card {
-      width: min(520px, 100%);
-      background: var(--surface);
+      width: min(420px, 100%);
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
       border-radius: 24px;
-      padding: 2.25rem 2rem;
-      border: 1px solid var(--border);
-      box-shadow: 0 25px 60px -40px rgba(0, 0, 0, 0.8);
+      padding: 2.5rem 2rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
       text-align: center;
     }
-    h1 { margin: 0 0 1rem; font-size: 1.9rem; }
-    p { margin: 0.6rem 0 1.5rem; color: var(--text-muted); line-height: 1.5; }
-    a.button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.4rem;
-      border-radius: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      background: rgba(255, 255, 255, 0.16);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      color: var(--text);
-      transition: transform 0.15s ease, background 0.15s ease;
-    }
-    a.button:hover {
-      transform: translateY(-1px);
-      background: rgba(255, 255, 255, 0.22);
-    }
-    .form-group {
-      margin-bottom: 1.5rem;
-      text-align: left;
-    }
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      color: var(--text);
-    }
+
+    h1 { margin: 0 0 1rem; font-size: 1.8rem; }
+    p { margin: 0 0 2rem; opacity: 0.7; line-height: 1.5; font-size: 0.9rem; }
+
+    .form-group { margin-bottom: 1.5rem; text-align: left; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+    
     input[type="password"] {
       width: 100%;
-      padding: 0.75rem;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      background: rgba(120, 120, 120, 0.1);
       color: var(--text);
       font-size: 16px;
-      transition: border-color 0.15s ease;
+      box-sizing: border-box;
+      outline: none;
+      transition: 0.2s;
     }
     input[type="password"]:focus {
-      outline: none;
       border-color: var(--accent);
+      background: rgba(120, 120, 120, 0.15);
     }
+
     button.button {
-      background: linear-gradient(135deg, var(--accent), #e55a00);
+      background: var(--accent);
+      color: white;
       border: none;
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
       cursor: pointer;
       width: 100%;
-      margin-top: 1rem;
+      transition: transform 0.1s;
     }
-    button.button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+    button.button:active { transform: scale(0.98); }
+    button.button:disabled { opacity: 0.6; cursor: not-allowed; }
+
     .error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-      padding: 0.75rem;
-      border-radius: 8px;
+      background: rgba(255, 59, 48, 0.1);
+      color: #ff3b30;
+      padding: 0.8rem;
+      border-radius: 12px;
       margin-top: 1rem;
+      font-size: 0.9rem;
       display: none;
     }
-    small { display: block; margin-top: 1.25rem; color: var(--text-muted); }
+    
+    small { display: block; margin-top: 2rem; opacity: 0.5; font-size: 0.8rem; }
   </style>
 </head>
 <body>
+  <div class="bg-blob b1"></div>
+  <div class="bg-blob b2"></div>
+
   <div class="card">
     <h1>Admin Portal</h1>
-    <p>You must sign in with an approved Google account and enter the admin passcode.</p>
+    <p>Sign in with your Google account and enter the club passcode.</p>
     
     <form id="admin-form">
       <div class="form-group">
-        <label for="passcode">Admin Passcode:</label>
-        <input type="password" id="passcode" placeholder="Enter admin passcode" required>
+        <label for="passcode">Access Code</label>
+        <input type="password" id="passcode" placeholder="••••••••" required>
       </div>
       <button type="submit" class="button" id="submit-btn">
-        Access Admin Panel
+        Unlock Dashboard
       </button>
     </form>
     
     <div id="error-message" class="error"></div>
     
-    <small>Need access? Contact the committee to add your Google address to the whitelist.</small>
+    <small>Contact committee for whitelist access.</small>
   </div>
 
   <script>
+    // 保持原有的 JS 逻辑不变
     const ADMIN_URL = 'https://script.google.com/macros/s/AKfycbwnt_x7f1ly83d7LqYKNR0l16vg9rI0iSlbRiUCl8SkttsHEVNcSrqdOlwYKalnVpqV/exec?resource=admin';
-    // 只放 HASH，不放明文
     const CORRECT_HASH = '2b6f2ad6a9748e244de9a18ed43a449ba004f2a548d334b83db92378f317b9a0';
   
     async function sha256Hex(msg) {
@@ -142,32 +158,29 @@
       const errorDiv = document.getElementById('error-message');
   
       errorDiv.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifying...';
   
       const hash = await sha256Hex(passEl.value);
       if (hash === CORRECT_HASH) {
         submitBtn.textContent = 'Redirecting...';
-        submitBtn.disabled = true;
-  
-        // 可选：仅用于前端 UI 的纪念标记，不作为安全凭证
         sessionStorage.setItem('admin_verified', 'true');
-  
-        // 不要把明文或 hash 放在 URL 里（避免被日志/历史记录/Referer 收集）
         window.open(ADMIN_URL, '_blank');
-  
         setTimeout(() => {
-          submitBtn.textContent = 'Access Admin Panel';
+          submitBtn.textContent = 'Unlock Dashboard';
           submitBtn.disabled = false;
           passEl.value = '';
         }, 1200);
       } else {
-        errorDiv.textContent = 'Incorrect passcode. Please try again.';
+        submitBtn.textContent = 'Unlock Dashboard';
+        submitBtn.disabled = false;
+        errorDiv.textContent = 'Incorrect passcode.';
         errorDiv.style.display = 'block';
         passEl.value = '';
         passEl.focus();
       }
     });
-      // 页面加载时清除验证状态
-      sessionStorage.removeItem('admin_verified');
+    sessionStorage.removeItem('admin_verified');
   </script>
 </body>
 </html>
