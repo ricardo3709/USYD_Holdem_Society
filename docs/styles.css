@@ -332,16 +332,25 @@ main {
   justify-content: flex-end; /* 靠右对齐 */
 }
 .badge-chip {
-  background: rgba(120, 120, 120, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  background: transparent; /* 1. 关键：背景设为透明 */
+  border: none;            /* 2. 去掉边框 */
+  border-radius: 0;        /* 不需要圆角了 */
+  
+  /* 调整尺寸和字体，因为没有圈了，Emoji 可以稍微大一点 */
+  width: 24px;             
+  height: 24px;
+  font-size: 18px;         /* 放大 Emoji 字体，之前是 9px 太小了 */
+  
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
   cursor: help;
+  transition: transform 0.2s; /* 加一个小动画，点击/悬停时更好看 */
+}
+
+/* 可选：鼠标悬停时稍微放大，增加交互感 */
+.badge-chip:hover {
+  transform: scale(1.2);
 }
 
 /* --- Player Detail Panel --- */
@@ -420,4 +429,39 @@ main {
   .badges-cell { display: table-cell; }
   .table th { font-size: 0.65rem; }
   .table td { font-size: 0.85rem; }
+}
+
+/* --- Badge Tooltip (Patch) --- */
+.badge-tooltip {
+  position: fixed;
+  z-index: 1000;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  background: rgba(20, 20, 20, 0.95); /* 深色背景确保对比度 */
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+  font-size: 0.85rem;
+  font-weight: 500;
+  max-width: min(260px, 80vw);
+  transform: translateX(-50%);
+  pointer-events: none; /* 确保不阻挡鼠标事件 */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: opacity 0.2s;
+}
+
+/* 适配浅色模式 */
+@media (prefers-color-scheme: light) {
+  .badge-tooltip {
+    background: rgba(255, 255, 255, 0.95);
+    color: #1d1d1f;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.badge-tooltip[hidden] {
+  display: none;
+  opacity: 0;
 }
