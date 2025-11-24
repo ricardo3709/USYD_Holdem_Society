@@ -255,7 +255,7 @@ main {
 /* 2. 左右 Padding 优化 */
 .board__wrapper {
   overflow-x: hidden;
-  padding: 0 12px; /* 增加表格容器的左右内边距，防止文字贴边 */
+  padding: 0 1rem; /* 增加表格容器的左右内边距，防止文字贴边 */
 }
 
 .table {
