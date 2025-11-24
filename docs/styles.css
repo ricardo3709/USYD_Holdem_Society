@@ -337,9 +337,9 @@ main {
   border-radius: 0;        /* 不需要圆角了 */
   
   /* 调整尺寸和字体，因为没有圈了，Emoji 可以稍微大一点 */
-  width: 20px;             
-  height: 20px;
-  font-size: 12px;         /* 放大 Emoji 字体，之前是 9px 太小了 */
+  width: 22px;             
+  height: 22px;
+  font-size: 16px;         /* 放大 Emoji 字体，之前是 9px 太小了 */
   
   display: inline-flex;
   align-items: center;
