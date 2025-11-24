@@ -83,8 +83,8 @@ body {
   animation: float 10s infinite ease-in-out alternate;
 }
 
-.blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--blob-1); animation-delay: 0s; }
-.blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: var(--blob-2); animation-delay: -2s; }
+.blob-1 { top: -10%; left: -10%; width: 70vw; height: 70vw; background: var(--blob-1); animation-delay: 0s; }
+.blob-2 { bottom: -10%; right: -10%; width: 70vw; height: 70vw; background: var(--blob-2); animation-delay: -2s; }
 .blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: var(--blob-3); animation-delay: -4s; }
 
 @keyframes float {
