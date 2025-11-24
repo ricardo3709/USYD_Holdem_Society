@@ -9,7 +9,7 @@
   --accent: #007aff; /* iOS Blue */
   
   /* Glass 效果变量 (Light) */
-  --glass-bg: rgba(255, 255, 255, 0.75); /* 稍微增加不透明度以提升阅读性 */
+  --glass-bg: rgba(255, 255, 255, 0.5); /* 稍微增加不透明度以提升阅读性 */
   --glass-border: rgba(255, 255, 255, 0.5);
   --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
   --glass-blur: 24px;
