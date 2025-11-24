@@ -123,6 +123,7 @@ function renderLeaderboard() {
 
   emptyStateEl.setAttribute('hidden', '');
 
+  // 在 docs/main.js 中找到这一段并替换
   filteredPlayers.forEach((player, index) => {
     const tr = document.createElement('tr');
     tr.dataset.rank = (index + 1).toString();
@@ -135,11 +136,11 @@ function renderLeaderboard() {
           </div>
         </div>
       </td>
+      <td>${player.total_points.toLocaleString()}</td>
+      <td>${player.finals_played?.toLocaleString?.() ?? player.finals_played ?? 0}</td>
       <td class="badges-cell">
         ${renderBadgesCell(player)}
       </td>
-      <td>${player.total_points.toLocaleString()}</td>
-      <td>${player.finals_played?.toLocaleString?.() ?? player.finals_played ?? 0}</td>
     `;
     tr.addEventListener('click', () => showPlayerDetail(player.id));
     leaderboardBody.appendChild(tr);

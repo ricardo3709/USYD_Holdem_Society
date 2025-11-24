@@ -9,10 +9,10 @@
   --accent: #007aff; /* iOS Blue */
   
   /* Glass 效果变量 (Light) */
-  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-bg: rgba(255, 255, 255, 0.75); /* 稍微增加不透明度以提升阅读性 */
   --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-  --glass-blur: 20px;
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+  --glass-blur: 24px;
   
   /* 流体背景色 (Light) */
   --blob-1: #ffcfd2;
@@ -172,7 +172,7 @@ body {
   border: none;
   padding: 0.8rem 0;
   color: var(--text-primary);
-  font-size: 16px; /* 防止 iOS input 自动放大 */
+  font-size: 16px; 
   width: 200px;
   outline: none;
 }
@@ -207,7 +207,7 @@ main {
   align-items: start;
 }
 
-/* --- Leaderboard Table (Updated for Mobile) --- */
+/* --- Leaderboard Table --- */
 .board {
   padding: 0;
   overflow: hidden;
@@ -252,30 +252,30 @@ main {
   opacity: 0.7;
 }
 
-/* 移动端优化：增加Padding，禁止横向滚动 */
+/* 2. 左右 Padding 优化 */
 .board__wrapper {
   overflow-x: hidden;
-  padding: 0 0.5rem; 
+  padding: 0 12px; /* 增加表格容器的左右内边距，防止文字贴边 */
 }
 
-/* 强制表格布局固定，防止撑开屏幕 */
 .table {
   width: 100%;
   border-collapse: collapse;
   white-space: nowrap;
-  table-layout: fixed;
+  table-layout: fixed; /* 固定布局，防止撑开 */
 }
 
-/* 定义列宽 - 总和 100% */
+/* 3. 重新定义列宽 (Badges 移到最后) */
+/* 总和 100% */
 .table th:nth-child(1) { width: 12%; text-align: center; } /* Rank */
-.table th:nth-child(2) { width: 34%; } /* Player (最宽) */
-.table th:nth-child(3) { width: 18%; } /* Badges */
-.table th:nth-child(4) { width: 18%; text-align: right; } /* Points */
-.table th:nth-child(5) { width: 18%; text-align: right; } /* Finals */
+.table th:nth-child(2) { width: 38%; } /* Player (最宽) */
+.table th:nth-child(3) { width: 15%; text-align: right; } /* Points */
+.table th:nth-child(4) { width: 15%; text-align: right; } /* Finals */
+.table th:nth-child(5) { width: 20%; text-align: right; } /* Badges (Last) */
 
 .table th {
   text-align: left;
-  padding: 1rem 0.25rem; /* 小屏幕减少Padding */
+  padding: 1rem 0.25rem;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -284,10 +284,11 @@ main {
   border-bottom: 1px solid var(--table-border);
 }
 
-/* 特殊列对齐修正 */
-.table th:nth-child(1), .table td:nth-child(1) { text-align: center; }
-.table th:nth-child(4), .table td:nth-child(4) { text-align: right; }
-.table th:nth-child(5), .table td:nth-child(5) { text-align: right; }
+/* 列对齐修正 */
+.table th:nth-child(1), .table td:nth-child(1) { text-align: center; } /* Rank */
+.table th:nth-child(3), .table td:nth-child(3) { text-align: right; } /* Points */
+.table th:nth-child(4), .table td:nth-child(4) { text-align: right; } /* Finals */
+.table th:nth-child(5), .table td:nth-child(5) { text-align: right; } /* Badges */
 
 .table td {
   padding: 1rem 0.25rem;
@@ -302,12 +303,12 @@ main {
   cursor: pointer;
 }
 
-/* 前三名排名高亮（去掉圆点，直接改数字颜色） */
+/* Rank Colors */
 .table tr[data-rank="1"] td:first-child { color: #FFD700; font-weight: 800; font-size: 1.1em; }
 .table tr[data-rank="2"] td:first-child { color: #C0C0C0; font-weight: 700; font-size: 1.05em; }
 .table tr[data-rank="3"] td:first-child { color: #CD7F32; font-weight: 700; font-size: 1.05em; }
 
-/* 玩家信息列：允许换行 */
+/* Player Name */
 .player-cell {
   display: flex;
   align-items: center;
@@ -317,33 +318,33 @@ main {
 .player-nickname {
   font-weight: 600;
   color: var(--text-primary);
-  white-space: normal; /* 允许换行 */
-  word-wrap: break-word; /* 防止长单词溢出 */
+  white-space: normal;
+  word-wrap: break-word;
   line-height: 1.3;
   display: block;
 }
 
-/* 徽章 Badge Chips (Updated) */
+/* Badges */
 .badge-stack {
   display: flex;
-  flex-wrap: wrap; /* 允许换行 */
+  flex-wrap: wrap;
   gap: 2px;
-  justify-content: flex-start;
+  justify-content: flex-end; /* 靠右对齐 */
 }
 .badge-chip {
   background: rgba(120, 120, 120, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
-  width: 22px; /* 缩小尺寸适配移动端 */
-  height: 22px;
+  width: 20px;
+  height: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 9px;
   cursor: help;
 }
 
-/* --- Player Detail Panel (Aside) --- */
+/* --- Player Detail Panel --- */
 .panel {
   padding: 2rem;
   position: sticky;
@@ -361,64 +362,18 @@ main {
   cursor: pointer;
 }
 
-.panel h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.25rem;
-}
-
-.panel__points {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--accent);
-  margin-bottom: 1rem;
-  text-shadow: 0 0 30px var(--glass-shadow);
-}
-
-.panel__meta {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-
-.panel__notes {
-  font-style: italic;
-  opacity: 0.8;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: rgba(120, 120, 120, 0.05);
-  border-radius: 12px;
-}
-
-.panel h4 {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  margin-bottom: 1rem;
-}
-
-.panel__history {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.panel__history li {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.8rem;
-  background: rgba(120, 120, 120, 0.05);
-  border-radius: 12px;
-  font-size: 0.9rem;
-}
+.panel h3 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+.panel__points { font-size: 2.5rem; font-weight: 800; color: var(--accent); margin-bottom: 1rem; }
+.panel__meta { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem; }
+.panel__notes { font-style: italic; opacity: 0.8; margin-bottom: 1.5rem; padding: 1rem; background: rgba(120, 120, 120, 0.05); border-radius: 12px; }
+.panel h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 1rem; }
+.panel__history { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+.panel__history li { display: flex; justify-content: space-between; padding: 0.8rem; background: rgba(120, 120, 120, 0.05); border-radius: 12px; font-size: 0.9rem; }
 
 /* --- Responsive Design --- */
 @media (max-width: 900px) {
-  main {
-    grid-template-columns: 1fr;
-  }
-
+  main { grid-template-columns: 1fr; }
+  
   .panel {
     position: fixed;
     top: auto;
@@ -434,51 +389,35 @@ main {
     transform: translateY(110%);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
-
-  .panel:not([hidden]) {
-    transform: translateY(0);
-    display: block;
-  }
-
-  /* 底部抽屉的把手条 */
+  .panel:not([hidden]) { transform: translateY(0); display: block; }
   .panel::before {
-    content: '';
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 4px;
-    background: var(--text-secondary);
-    border-radius: 2px;
-    opacity: 0.3;
+    content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+    width: 40px; height: 4px; background: var(--text-secondary); border-radius: 2px; opacity: 0.3;
   }
 }
 
 @media (max-width: 600px) {
-  .page { padding: 1rem 0.5rem; gap: 1rem; }
+  /* 1. 恢复圆角：这里的 padding 增加了页面整体的内缩 */
+  .page { padding: 1rem; gap: 1rem; } 
+  
   .hero { padding: 1.5rem; flex-direction: column; align-items: stretch; }
   .hero__actions { flex-direction: column; }
   .search input { width: 100%; }
   
   .board { 
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
+    /* 1. 恢复圆角：删除了 border-radius: 0 */
+    border-radius: 24px;
+    /* 解决圆角溢出 */
+    overflow: hidden; 
   }
   
   .board__header { 
-    flex-direction: column; 
-    align-items: flex-start; 
-    gap: 0.8rem; 
-    padding: 1.2rem 1rem;
+    flex-direction: column; align-items: flex-start; gap: 0.8rem; padding: 1.2rem 1rem;
   }
   .board__selector { width: 100%; }
   .board__select { width: 100%; }
   
-  /* 确保徽章列显示 */
   .badges-cell { display: table-cell; }
-  
   .table th { font-size: 0.65rem; }
   .table td { font-size: 0.85rem; }
 }
